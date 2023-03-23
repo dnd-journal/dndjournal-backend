@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int           @id @default(autoincrement())
+  email       String        @unique @db.VarChar(255)
+  password    String        @db.VarChar(255)
+  name        String        @db.VarChar(255)
+  description String
+  level       Int
+  xp          Int
+  gold        Int
+  Inventory   Inventory[]
+  Proficiency Proficiency[]
+  Class       Class[]
+  Ability     Ability[]
+  SoftSkills  SoftSkills[]
+  HardSkills  HardSkills[]
+}
+
+model Inventory {
+  id     Int    @id @default(autoincrement())
+  userId Int
+  User   User   @relation(fields: [userId], references: [id])
+  name   String @db.VarChar(255)
+  url    String
+}
+
+model Proficiency {
+  id     Int    @id @default(autoincrement())
+  userId Int
+  User   User   @relation(fields: [userId], references: [id])
+  name   String
+}
+
+model Class {
+  id     Int    @id @default(autoincrement())
+  userId Int
+  User   User   @relation(fields: [userId], references: [id])
+  name   String
+  value  Int
+}
+
+model Ability {
+  id         Int          @id @default(autoincrement())
+  userId     Int
+  User       User         @relation(fields: [userId], references: [id])
+  name       String
+  value      Int
+  SoftSkills SoftSkills[]
+  HardSkills HardSkills[]
+}
+
+model SoftSkills {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  User      User    @relation(fields: [userId], references: [id])
+  abilityId Int
+  Ability   Ability @relation(fields: [abilityId], references: [id])
+  name      String
+  value     Int
+}
+
+model HardSkills {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  User      User    @relation(fields: [userId], references: [id])
+  abilityId Int
+  Ability   Ability @relation(fields: [abilityId], references: [id])
+  name      String
+  value     Int
+}
